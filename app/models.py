@@ -15,9 +15,7 @@ database = os.getenv("DB_NAME")
 
 KIND_OPTS = ["freelancer", "fulltime", "parttime"]
 
-connection_string = (
-    f"mysql+mysqlconnector://{user}:{password}@localhost:3306/{database}"
-)
+connection_string = f"mysql+mysqlconnector://{user}:{password}@{host}:3306/{database}"
 
 engine = create_engine(connection_string, echo=False)
 

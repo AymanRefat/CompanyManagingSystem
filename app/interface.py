@@ -2,6 +2,8 @@ from app.menu import Menu
 
 
 class Interface:
+    """a Class that managing the displaying of the menus"""
+
     def __init__(self, home_menu) -> None:
         self.home_menu = home_menu
         self.menu_history = []

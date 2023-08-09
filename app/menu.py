@@ -3,17 +3,22 @@ from abc import ABC, abstractclassmethod
 
 
 class Option(ABC):
-    name = None
+    """an option is a function every Option should have a functionality to do"""
+
+    name: str = None
 
     def __str__(self) -> str:
         return self.name
 
     @abstractclassmethod
     def run(cls):
+        """a function runs when the user choose the option"""
         pass
 
 
 class Menu:
+    """A Menu is Box contains a Number of Options , it organizes the displaying of them automatically and provide a way for choosing the option"""
+
     def __init__(self, name: str, *options: list[Option]) -> None:
         self.name = name
         self.options = options
@@ -23,10 +28,6 @@ class Menu:
     def display(self):
         for i, opt in self._list:
             print(f"{i}. {opt.name}")
-
-    # def add_opt(self, opt: Option) -> Menu:
-    #     """return new menu contains the added option"""
-    #     return self.__class__(self.name, list(self.options) + [opt])
 
     @property
     def range_opt_number(self) -> tuple(int, int):
