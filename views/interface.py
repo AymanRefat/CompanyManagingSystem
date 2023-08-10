@@ -1,4 +1,4 @@
-from app.menu import Menu
+from views.menu import Menu
 
 
 class Interface:
@@ -12,9 +12,12 @@ class Interface:
         self.print_welcome_message()
         self.start_menu(self.home_menu)
 
-    # BUG
     def add_menu_to_history(self, menu: Menu) -> None:
-        self.menu_history.append(menu)
+        if len(self.menu_history) == 0:
+            self.menu_history.append(menu)
+        else:
+            if self.menu_history[-1] != menu:
+                self.menu_history.append(menu)
 
     def back_Menu(self) -> Menu:
         if self.menu_history:

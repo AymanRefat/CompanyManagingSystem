@@ -1,24 +1,11 @@
-import os
-from dotenv import load_dotenv
-from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, String, CHAR, Integer, Float, ForeignKey, Date, DateTime
 from sqlalchemy.orm import Session, validates
 from datetime import date
+from settings import KIND_OPTS, DB_ENGINE
 
-load_dotenv()
+
 Base = declarative_base()
-
-host = os.getenv("DB_HOST")
-user = os.getenv("DB_USER")
-password = os.getenv("DB_PASS")
-database = os.getenv("DB_NAME")
-
-KIND_OPTS = ["freelancer", "fulltime", "parttime"]
-
-connection_string = f"mysql+mysqlconnector://{user}:{password}@{host}:3306/{database}"
-
-engine = create_engine(connection_string, echo=False)
 
 
 class Employee(Base):
@@ -57,7 +44,7 @@ class WorkedHours(Base):
     worked_date = Column("worked_time", Date, nullable=False)
 
     def __repr__(self):
-        with Session(bind=engine) as session:
+        with Session(bind=DB_ENGINE) as session:
             return f"ID:{self.id} - {session.query(Employee).filter(Employee.id == self.employee_id).first().name} - {self.hours} - {self.current_hour_rate}$ - {self.worked_date}"
 
     @validates("worked_date")
@@ -75,4 +62,4 @@ class WorkedHours(Base):
             raise TypeError("the Type of data should be Float")
 
 
-Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=DB_ENGINE)
