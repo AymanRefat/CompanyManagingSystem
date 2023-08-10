@@ -7,7 +7,7 @@
 ## Features 
 
 ### 1. Flexable menus 
-	You can edit it's order and it's content without editing in the main interface removing or adding every thing will work correctly 
+You can edit it's order and it's content without editing in the main interface removing or adding every thing will work correctly 
 
 ### 2. CRUD Operations on Employees Table 
 

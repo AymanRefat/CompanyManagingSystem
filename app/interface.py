@@ -12,6 +12,7 @@ class Interface:
         self.print_welcome_message()
         self.start_menu(self.home_menu)
 
+    # BUG
     def add_menu_to_history(self, menu: Menu) -> None:
         self.menu_history.append(menu)
 
