@@ -6,7 +6,7 @@ todo.txt
 .vscode
 # C extensions
 *.so
-
+database.sqlite
 # Distribution / packaging
 .Python
 build/

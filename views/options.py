@@ -1,6 +1,8 @@
-from app.menu import Menu, Option
-from app.models import Employee, engine, Session, KIND_OPTS, WorkedHours
+from views.menu import Menu, Option
+from models.employee import Employee, WorkedHours
+from sqlalchemy.orm import Session
 from datetime import datetime
+from settings import KIND_OPTS, DB_ENGINE
 
 
 class ShowAllEmployeesOpt(Option):
@@ -10,7 +12,7 @@ class ShowAllEmployeesOpt(Option):
     def run(cls) -> None:
         print("\nEmployees Table")
         print("===============")
-        with Session(engine) as session:
+        with Session(DB_ENGINE) as session:
             results = session.query(Employee).all()
             for obj in results:
                 print(obj)
@@ -26,17 +28,15 @@ class CreateNewEmployeesOpt(Option):
         name = input("Name: ")
         title = input("Title: ")
         gender = input("Gender (m , f): ")
-        kind = input("Full , Part , Freelance: ")
-        hour_rate = input("Hour Rate: ")
+        kind = input("Job Kind: ")
 
-        with Session(engine) as session:
+        with Session(DB_ENGINE) as session:
             session.add(
                 Employee(
                     name=name,
                     job_title=title,
                     gender=gender,
                     kind=kind,
-                    hour_rate=hour_rate,
                 )
             )
             session.commit()
@@ -48,7 +48,7 @@ class UpdateEmployeesOpt(Option):
 
     @classmethod
     def run(self) -> None:
-        with Session(engine) as session:
+        with Session(DB_ENGINE) as session:
             em_id = int(input("Employee Id you want to Update: "))
             q = session.query(Employee).filter(Employee.id == em_id)
             sure = input(f"Do you really want to Update ({q.first()}) (y , n): ")
@@ -58,14 +58,12 @@ class UpdateEmployeesOpt(Option):
                 title = input("Title: ")
                 gender = input("Gender (m , f): ")
                 kind = input("Full , Part , Freelance: ")
-                hour_rate = input("Hour Rate: ")
                 q.update(
                     {
                         "name": name,
                         "job_title": title,
                         "gender": gender,
                         "kind": kind,
-                        "hour_rate": hour_rate,
                     }
                 )
                 session.commit()
@@ -78,7 +76,7 @@ class DeleteEmployeesOpt(Option):
 
     @classmethod
     def run(self) -> None:
-        with Session(engine) as session:
+        with Session(DB_ENGINE) as session:
             em_id = int(input("Employee Id you want to delete: "))
             q = session.query(Employee).filter(Employee.id == em_id)
             print(q)
@@ -96,7 +94,7 @@ class ShowWorkedHours(Option):
 
     @classmethod
     def run(self) -> None:
-        with Session(engine) as session:
+        with Session(DB_ENGINE) as session:
             q = session.query(WorkedHours).all()
 
             for item in q:
@@ -108,7 +106,7 @@ class addWorkedHoursForAll(Option):
 
     @classmethod
     def run(self) -> None:
-        with Session(engine) as session:
+        with Session(DB_ENGINE) as session:
             user_input_date = input("Enter a date in the format YYYY-MM-DD: ")
             d = datetime.strptime(user_input_date, "%Y-%m-%d").date()
             hour_rate = input("Enter Hour Rate Price: ")
@@ -132,7 +130,7 @@ class addWorkedHoursForEmployee(Option):
 
     @classmethod
     def run(self) -> None:
-        with Session(engine) as session:
+        with Session(DB_ENGINE) as session:
             user_input_date = input("Enter a date in the format YYYY-MM-DD: ")
             d = datetime.strptime(user_input_date, "%Y-%m-%d").date()
 
@@ -161,7 +159,7 @@ class DeleteWorkedHoursForEmployee(Option):
 
     @classmethod
     def run(self) -> None:
-        with Session(engine) as session:
+        with Session(DB_ENGINE) as session:
             wh_id = int(input("Worked Hours Id you want to delete: "))
             q = session.query(WorkedHours).filter(WorkedHours.id == wh_id)
             sure = input(f"Do you really want to Delete ({q.first()}) (y , n): ")
