@@ -1,19 +1,5 @@
 from __future__ import annotations
-from abc import ABC, abstractclassmethod
-
-
-class Option(ABC):
-    """an option is a function every Option should have a functionality to do"""
-
-    name: str = None
-
-    def __str__(self) -> str:
-        return self.name
-
-    @abstractclassmethod
-    def run(cls):
-        """a function runs when the user choose the option"""
-        pass
+from utils.option import Option
 
 
 class Menu:

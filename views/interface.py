@@ -1,8 +1,12 @@
-from views.menu import Menu
+from utils.menu import Menu
+from settings import EXIT_OPT
+from utils.input_manager import InputManager
 
 
 class Interface:
     """a Class that managing the displaying of the menus"""
+
+    choose = InputManager("choose", int, int, "Choose Option: ")
 
     def __init__(self, home_menu) -> None:
         self.home_menu = home_menu
@@ -10,6 +14,8 @@ class Interface:
 
     def start(self) -> None:
         self.print_welcome_message()
+        if EXIT_OPT:
+            print("'q' for Quit")
         self.start_menu(self.home_menu)
 
     def add_menu_to_history(self, menu: Menu) -> None:
@@ -32,12 +38,11 @@ class Interface:
             back_opt_num = menu.range_opt_number[1] + 1
             print(f"{back_opt_num}. Back")
 
-        user_input = self.get_int_or_quit("Enter the number: ")
-
-        if user_input == back_opt_num:
+        choose = self.choose.try_till_get(exit_opt=EXIT_OPT).get("choose")
+        if choose == back_opt_num:
             self.start_menu(self.back_Menu())
         else:
-            opt = menu.get_opt(int(user_input))
+            opt = menu.get_opt(choose)
 
             # if it was a new menu
             # show it
@@ -46,23 +51,10 @@ class Interface:
             if isinstance(opt, Menu):
                 self.start_menu(opt)
             else:
-                opt.run()
+                opt(exit_opt=EXIT_OPT).start()
                 self.start_menu(menu)
-
-    def get_int_or_quit(self, promt: str) -> int:
-        while True:
-            user_input: str = input(promt)
-            if user_input.lower() == "q":
-                print("Bye :)")
-                quit()
-            if user_input.isdigit():
-                return int(user_input)
-            else:
-                continue
 
     def print_welcome_message(self) -> None:
         print("""======================================""")
         print("""=========== Welcome There ============""")
         print("""======================================""")
-        print("q: Quit")
-        print("\n")

@@ -40,12 +40,12 @@ class WorkedHours(Base):
     id = Column("id", Integer, autoincrement=True, nullable=False, primary_key=True)
     employee_id = Column("employee_id", ForeignKey("employees.id"))
     hours = Column("hours", Float, nullable=False)
-    current_hour_rate = Column("current_hour_rate", Float, nullable=False)
+    hour_rate = Column("current_hour_rate", Float, nullable=False)
     worked_date = Column("worked_time", Date, nullable=False)
 
     def __repr__(self):
         with Session(bind=DB_ENGINE) as session:
-            return f"ID:{self.id} - {session.query(Employee).filter(Employee.id == self.employee_id).first().name} - {self.hours} - {self.current_hour_rate}$ - {self.worked_date}"
+            return f"ID:{self.id} - {session.query(Employee).filter(Employee.id == self.employee_id).first().name} - {self.hours} H - {self.hour_rate}$/H - {self.worked_date}"
 
     @validates("worked_date")
     def validate_worked_date(self, key, value) -> date:
@@ -54,7 +54,7 @@ class WorkedHours(Base):
         else:
             raise TypeError("Worked Date should be a date")
 
-    @validates("hours", "current_hour_rate")
+    @validates("hours", "hour_rate")
     def validate_float(self, key, value) -> float:
         try:
             return float(value)
