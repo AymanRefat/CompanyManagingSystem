@@ -22,5 +22,6 @@ LOGGING = False
 
 DB_ENGINE = sqlite_engine(LOGGING)
 
+EXIT_OPT = True
 
 KIND_OPTS = ["freelancer", "fulltime", "parttime"]

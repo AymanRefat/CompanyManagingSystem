@@ -7,6 +7,7 @@ todo.txt
 # C extensions
 *.so
 database.sqlite
+test.py
 # Distribution / packaging
 .Python
 build/
