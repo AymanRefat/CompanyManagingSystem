@@ -1,30 +1,32 @@
 # Company Managing System
 
-## Tools 
+## Tools
+
 - Python
-- Mysql 
+- Database (Mysql or Sqlite)
 
-## Features 
+## Features
 
-### 1. Flexable menus 
-You can edit it's order and it's content without editing in the main interface removing or adding every thing will work correctly 
+### 1. Flexable menus
 
-### 2. CRUD Operations on Employees Table 
+You can edit it's order and it's content without editing in the main interface removing or adding every thing will work correctly
 
+### 2. CRUD Operations on Employees Table
+
+### 3. Track Worked Hours for Each Employee
 
 ## Start Guild
 
-1- install required libs 
+1- install required libs
+
 ```shell
-pipenv install
-``````
-
-2- Create Mysql DataBase
-
-3- Adding Database info into ```.env``` file
+pip install -r requirements.txt
 ```
-DB_HOST = server_ip or localhost
-DB_USER = user_name 
-DB_PASS = passowrd
-DB_NAME = database_name
+
+2 - By default the db is sqlite **You can change it from the `settings.py` file**
+
+3- Run `main.py` File
+
+```
+python3 main.py
 ```
