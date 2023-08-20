@@ -5,7 +5,9 @@ name = "pypi"
 
 [packages]
 python-dotenv = "*"
-sqlalchemy = "*"
+sqlalchemy = "==1.4.49"
+pytest = "*"
+coverage = "*"
 
 [dev-packages]
 

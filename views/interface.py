@@ -1,3 +1,4 @@
+from sqlalchemy.orm import Session
 from utils.menu import Menu
 from settings import EXIT_OPT
 from utils.input_manager import InputManager
@@ -8,9 +9,10 @@ class Interface:
 
     choose = InputManager("choose", int, int, "Choose Option: ")
 
-    def __init__(self, home_menu) -> None:
+    def __init__(self, home_menu: Menu, SessionMaker: Session) -> None:
         self.home_menu = home_menu
         self.menu_history = []
+        self.SessionMaker = SessionMaker
 
     def start(self) -> None:
         self.print_welcome_message()
@@ -51,7 +53,7 @@ class Interface:
             if isinstance(opt, Menu):
                 self.start_menu(opt)
             else:
-                opt(exit_opt=EXIT_OPT).start()
+                opt(self.SessionMaker, exit_opt=EXIT_OPT).start()
                 self.start_menu(menu)
 
     def print_welcome_message(self) -> None:

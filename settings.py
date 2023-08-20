@@ -1,27 +1,19 @@
-import os
-from sqlalchemy import create_engine, Engine
-
-
-def mysql_engine(logging: bool) -> Engine:
-    host = os.getenv("DB_HOST")
-    user = os.getenv("DB_USER")
-    password = os.getenv("DB_PASS")
-    database = os.getenv("DB_NAME")
-    connection_string = (
-        f"mysql+mysqlconnector://{user}:{password}@{host}:3306/{database}"
-    )
-
-    return create_engine(connection_string, echo=logging)
-
-
-def sqlite_engine(logging: bool) -> Engine:
-    return create_engine("sqlite:///database.sqlite")
-
+from sqlalchemy.orm import Session
+from utils.funcs import sqlite_engine, mysql_engine
+from os import getcwd
 
 LOGGING = False
 
-DB_ENGINE = sqlite_engine(LOGGING)
+PATH = getcwd()
+
+SQLITE_NAME = "db.sqlite"
+
+TEST_DB_NAME = "testdb.sqlite"
+
+DB_ENGINE = sqlite_engine(LOGGING, SQLITE_NAME)
 
 EXIT_OPT = True
+
+SESSION_MAKER = Session(DB_ENGINE)
 
 KIND_OPTS = ["freelancer", "fulltime", "parttime"]

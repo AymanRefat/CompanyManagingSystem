@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod, abstractproperty
 from utils.input_manager import InputManager
 from utils.signal import *
 from utils.funcs import combine_dicts
+from sqlalchemy.orm import Session
 
 
 class Option(ABC):
@@ -11,8 +12,10 @@ class Option(ABC):
     info: str = None
     input_list: list[InputManager] = []
 
-    def __init__(self, exit_opt: bool = False) -> None:
+    def __init__(self, SessionMaker: Session, exit_opt: bool = False) -> None:
         self.exit_opt = exit_opt
+        self.SessionMaker = SessionMaker
+        self.data_dict = {}
 
     @abstractproperty
     def task(self) -> str:
@@ -36,6 +39,9 @@ class Option(ABC):
     def excute(self) -> Signal:
         """a function excutes when the user choose the option and return a Signal"""
 
+    def add_signal(self, signal: Signal) -> None:
+        self.signal = signal(self.task)
+
     def start(self) -> None:
         self.show_info()
         # to ensure that the opt needs data
@@ -43,7 +49,10 @@ class Option(ABC):
             self.get_data()
         try:
             self.excute()
-            Succeeded(self.task).print()
+            self.add_signal(Succeeded)
         except Exception as e:
-            Failed(self.task).print()
+            self.add_signal(Failed)
             print(e)
+            print(e.__traceback__)
+
+        self.signal.print()

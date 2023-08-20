@@ -1,8 +1,7 @@
 from utils.menu import Option
 from models.employee import Employee, WorkedHours
-from sqlalchemy.orm import Session, Query
+from sqlalchemy.orm import Query
 from datetime import datetime, date
-from settings import DB_ENGINE
 from utils.input_manager import InputManager
 
 
@@ -12,13 +11,12 @@ class ShowWorkedHours(Option):
 
     @property
     def task(self) -> str:
-        return " Showing all Worked Hours"
+        return "Showing all Worked Hours"
 
     def excute(self) -> None:
-        with Session(DB_ENGINE) as session:
+        with self.SessionMaker as session:
             q = session.query(WorkedHours).all()
-            for item in q:
-                print(item)
+            print(*q, sep="\n")
 
 
 class addWorkedHoursForAll(Option):
@@ -32,7 +30,7 @@ class addWorkedHoursForAll(Option):
             cast_func_args=["%Y-%m-%d"],
         ),
         InputManager("hour_rate", float, float, "Enter Hour Rate Price: "),
-        InputManager("hours", float, float, "Enter Hours Price: "),
+        InputManager("hours", float, float, "Enter Hours Worked: "),
     ]
 
     @property
@@ -40,7 +38,7 @@ class addWorkedHoursForAll(Option):
         return f"Adding {self.data_dict.get('hours')} with Hour Rate {self.data_dict.get('hour_rate')}$ For All Employees "
 
     def excute(self) -> None:
-        with Session(DB_ENGINE) as session:
+        with self.SessionMaker as session:
             d = self.data_dict.pop("date").date()
             employees = session.query(Employee).all()
             for employee in employees:
@@ -75,14 +73,14 @@ class addWorkedHoursForEmployee(Option):
         return f"Adding {self.data_dict.get('hours')} with Hour Rate {self.data_dict.get('hour_rate')}$ For {self.get_query().first()} "
 
     def get_query(self) -> Query:
-        with Session(DB_ENGINE) as session:
+        with self.SessionMaker as session:
             employee_id = self.data_dict.pop("employee_id")
             q = session.query(Employee).filter(Employee.id == employee_id)
             self.q = q
             return q
 
     def excute(self) -> None:
-        with Session(DB_ENGINE) as session:
+        with self.SessionMaker as session:
             d = self.data_dict.pop("date").date()
 
             employee = self.q.first()
@@ -97,6 +95,23 @@ class addWorkedHoursForEmployee(Option):
             session.commit()
 
 
+class ShowTotalHoursForAll(Option):
+    name = "Show Total Hours for All"
+
+    @property
+    def task(self) -> str:
+        return f"Getting Total hours for All"
+
+    def excute(self) -> None:
+        with self.SessionMaker as session:
+            ems = session.query(Employee).all()
+
+            for em in ems:
+                print(
+                    f"Employee:({em.name}) , Total Hours:{em.get_total_hours(self.SessionMaker)}"
+                )
+
+
 class DeleteWorkedHoursForEmployee(Option):
     name = "Delete Worked Hours for Employee"
 
@@ -109,14 +124,14 @@ class DeleteWorkedHoursForEmployee(Option):
         return f"Deleting {self.get_query().first()} "
 
     def get_query(self) -> Query:
-        with Session(DB_ENGINE) as session:
+        with self.SessionMaker as session:
             record_id = self.data_dict.pop("record_id")
             q = session.query(WorkedHours).filter(WorkedHours.id == record_id)
             self.q = q
             return q
 
     def excute(self) -> None:
-        with Session(DB_ENGINE) as session:
+        with self.SessionMaker as session:
             q = self.q
             q.delete()
             session.commit()
