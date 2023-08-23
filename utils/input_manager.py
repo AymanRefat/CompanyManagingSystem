@@ -28,11 +28,10 @@ class InputManager:
                     print("Bye :)")
                     exit()
             try:
-                return {
-                    self.key: self.cast_func(
-                        data, *self.cast_func_args, **self.cast_func_kwargs
-                    )
-                }
+                return {self.key: self._cast(data)}
             except Exception as e:
                 print(e.__traceback__.__str__())
                 print(e)
+
+    def _cast(self, value) -> Any:
+        return self.cast_func(value, *self.cast_func_args, **self.cast_func_kwargs)

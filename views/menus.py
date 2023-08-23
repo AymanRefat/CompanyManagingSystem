@@ -1,6 +1,8 @@
 from views.employee import *
 from views.worked_hours import *
 from utils.menu import Menu
+from views.rewards import *
+
 
 hours_menu = Menu(
     "Hours",
@@ -19,4 +21,6 @@ employees_menu = Menu(
     UpdateEmployeesOpt,
 )
 
-home_menu = Menu("Home Menu", employees_menu, hours_menu)
+rewards_menu = Menu("Rewards", ShowAllRewards, CreateReward, DeleteReward)
+
+home_menu = Menu("Home Menu", employees_menu, hours_menu, rewards_menu)

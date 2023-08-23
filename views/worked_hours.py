@@ -1,22 +1,15 @@
-from utils.menu import Option
+from utils.option import Option, ShowAllOption
 from models.employee import Employee, WorkedHours
 from sqlalchemy.orm import Query
 from datetime import datetime, date
 from utils.input_manager import InputManager
 
 
-class ShowWorkedHours(Option):
+class ShowWorkedHours(ShowAllOption):
     name = "Show All"
     info = "Worked Hours List"
-
-    @property
-    def task(self) -> str:
-        return "Showing all Worked Hours"
-
-    def excute(self) -> None:
-        with self.SessionMaker as session:
-            q = session.query(WorkedHours).all()
-            print(*q, sep="\n")
+    objects = "worked hours"
+    model = WorkedHours
 
 
 class addWorkedHoursForAll(Option):
@@ -133,5 +126,5 @@ class DeleteWorkedHoursForEmployee(Option):
     def excute(self) -> None:
         with self.SessionMaker as session:
             q = self.q
-            q.delete()
+            session.delete(q.first())
             session.commit()

@@ -2,7 +2,8 @@ from abc import ABC, abstractmethod, abstractproperty
 from utils.input_manager import InputManager
 from utils.signal import *
 from utils.funcs import combine_dicts
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import DeclarativeBase, Query, Session
+import traceback
 
 
 class Option(ABC):
@@ -53,6 +54,32 @@ class Option(ABC):
         except Exception as e:
             self.add_signal(Failed)
             print(e)
-            print(e.__traceback__)
+            print(traceback.format_exc())
 
         self.signal.print()
+
+
+class ShowAllOption(Option):
+    name = "Show All"
+    objects: str = None
+    model: DeclarativeBase = None
+
+    @property
+    def task(self) -> str:
+        return f" Showing all {self.get_objects_name()}"
+
+    def get_objects_name(self) -> str:
+        if self.objects:
+            return self.objects
+        else:
+            raise ValueError("You need to add objects attr to your class Option")
+
+    def excute(self) -> Signal:
+        with self.SessionMaker as session:
+            q: Query = session.query(self.model).all()
+            if len(q) == 0:
+                print("Empty!")
+            else:
+                for x in q:
+                    x.session = self.SessionMaker
+                    print(x)

@@ -10,7 +10,7 @@ from views.worked_hours import (
     addWorkedHoursForAll,
     addWorkedHoursForEmployee,
 )
-from utils.signal import Succeeded
+from views.rewards import ShowAllOption, CreateReward, DeleteReward
 from sqlalchemy.orm import Session
 from tests.conftest import create_employee
 
@@ -59,3 +59,7 @@ class TestWorkedHoursOptions:
         # Create before show
         opt = ShowWorkedHours(SessionMaker)
         opt.excute()
+
+
+class TestRewardsOptions:
+    pass
