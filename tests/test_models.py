@@ -3,12 +3,16 @@ from datetime import date
 from models.employee import Employee, WorkedHours
 from sqlalchemy.orm import Session
 from tests.conftest import create_employee
-from sqlalchemy import Column
 
 
 def test_create_employee_wrong_gender():
     with pytest.raises(ValueError) as e:
-        em = Employee(name="s", job_title="s", gender="wrong", kind="freelancer")
+        em = Employee(
+            name="s",
+            job_title="s",
+            gender="wrong",
+            kind="freelancer",
+        )
 
 
 def test_create_employee_wrong_kind():
@@ -17,19 +21,32 @@ def test_create_employee_wrong_kind():
 
 
 def test_setting_gender_lower_case():
-    em = Employee(name="someone", job_title="somejob", gender="M", kind="freelancer")
+    em = Employee(
+        name="someone",
+        job_title="somejob",
+        gender="M",
+        kind="freelancer",
+    )
     assert em.gender == "m"
 
 
 def test_creating_worked_string_hours_and_rates(employee, today):
     with pytest.raises(TypeError) as e:
         wh = WorkedHours(
-            employee_id=employee.id, hours="som", hour_rate="som", worked_date=today
+            employee_id=employee.id,
+            hours="som",
+            hour_rate="som",
+            worked_date=today,
         )
 
 
 def test_creating_worked_right_hours_and_rates(employee, today):
-    wh = WorkedHours(employee_id=employee.id, hours=19, hour_rate=10, worked_date=today)
+    wh = WorkedHours(
+        employee_id=employee.id,
+        hours=19,
+        hour_rate=10,
+        worked_date=today,
+    )
     assert isinstance(wh.hour_rate, float)
     assert isinstance(wh.hours, float)
 
@@ -37,12 +54,20 @@ def test_creating_worked_right_hours_and_rates(employee, today):
 def test_creating_workedhours_date(employee, today):
     with pytest.raises(TypeError) as e:
         wh = WorkedHours(
-            employee_id=employee.id, hours=19, hour_rate=10, worked_date=134
+            employee_id=employee.id,
+            hours=19,
+            hour_rate=10,
+            worked_date=134,
         )
 
 
 def test_creating_workedhours_date_righttype(employee, today):
-    wh = WorkedHours(employee_id=employee.id, hours=19, hour_rate=10, worked_date=today)
+    wh = WorkedHours(
+        employee_id=employee.id,
+        hours=19,
+        hour_rate=10,
+        worked_date=today,
+    )
     assert isinstance(wh.worked_date, date)
 
 
@@ -56,7 +81,10 @@ def test_total_hours(
     with SessionMaker as session:
         for x in hours:
             wh = WorkedHours(
-                employee_id=employee.id, hours=x, hour_rate=10, worked_date=today
+                employee_id=employee.id,
+                hours=x,
+                hour_rate=10,
+                worked_date=today,
             )
             session.add(wh)
             session.commit()
@@ -65,4 +93,5 @@ def test_total_hours(
         q = session.query(WorkedHours).filter(WorkedHours.employee_id == employee.id)
         for x in q:
             total += x.hours
-    assert employee.get_total_hours(SessionMaker) == total
+        employee.session = SessionMaker
+    assert employee.get_total_hours() == total

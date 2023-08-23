@@ -1,15 +1,15 @@
 import pytest
+from sqlalchemy.orm import Session
 import os
-from settings import PATH, TEST_DB_NAME
-from models.employee import Employee, WorkedHours
 from datetime import date
+import random as rd
+
+from settings import PATH, TEST_DB_NAME
+from models.funcs import create_tabels
+from models.employee import Employee, WorkedHours, Base
 from utils.option import Option
 from utils.signal import Signal
 from utils.funcs import get_test_session_maker, get_test_sqlite_engine
-from models.employee import Base
-from settings import PATH, TEST_DB_NAME
-import random as rd
-from sqlalchemy.orm import Session
 
 
 def create_employee(SessionMaker: Session, d: dict) -> Employee:
@@ -109,7 +109,7 @@ def SessionMaker(employee_dict2, employee_dict1):
     # Creating the Database and tables
     engine = get_test_sqlite_engine(False, TEST_DB_NAME)
     SessionMaker = get_test_session_maker(engine)
-    Base.metadata.create_all(bind=engine)
+    create_tabels(engine)
 
     #  Create 2 Employees and 2 Worked Hours
     em1 = create_employee(SessionMaker, employee_dict1)
@@ -117,10 +117,16 @@ def SessionMaker(employee_dict2, employee_dict1):
     print("2 Employees Created")
     with SessionMaker as session:
         wh1 = WorkedHours(
-            employee_id=em1.id, hours=5, hour_rate=9, worked_date=date.today()
+            employee_id=em1.id,
+            hours=5,
+            hour_rate=9,
+            worked_date=date.today(),
         )
         wh2 = WorkedHours(
-            employee_id=em2.id, hours=7, hour_rate=9, worked_date=date.today()
+            employee_id=em2.id,
+            hours=7,
+            hour_rate=9,
+            worked_date=date.today(),
         )
         session.add(wh1, wh2)
         session.commit()

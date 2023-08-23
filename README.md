@@ -23,7 +23,9 @@ You can edit it's order and it's content without editing in the main interface r
 pip install -r requirements.txt
 ```
 
-2 - By default the db is sqlite **You can change it from the `settings.py` file**
+2 - By default the db is sqlite
+
+You can change it from the `settings.py` file
 
 3- Run `main.py` File
 

@@ -1,4 +1,4 @@
-from utils.menu import Option
+from utils.option import Option, ShowAllOption
 from models.employee import Employee
 from sqlalchemy.orm import Query
 from settings import KIND_OPTS
@@ -6,19 +6,11 @@ from utils.input_manager import InputManager
 from utils.signal import Signal
 
 
-class ShowAllEmployeesOpt(Option):
+class ShowAllEmployeesOpt(ShowAllOption):
     name = "Show all"
     info = "Employees List"
-
-    @property
-    def task(self) -> str:
-        return " Showing all Employees"
-
-    def excute(self) -> Signal:
-        with self.SessionMaker as session:
-            results = session.query(Employee).all()
-            for obj in results:
-                print(obj)
+    objects = "employees"
+    model = Employee
 
 
 class CreateNewEmployeesOpt(Option):
@@ -91,5 +83,5 @@ class DeleteEmployeesOpt(Option):
     def excute(self) -> Signal:
         with self.SessionMaker as session:
             q = self.get_query()
-            q.delete()
+            session.delete(q.first())
             session.commit()
