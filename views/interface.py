@@ -1,13 +1,13 @@
 from sqlalchemy.orm import Session
 from utils.menu import Menu
 from settings import EXIT_OPT
-from utils.input_manager import InputManager
+from utils.input_manager import Input
 
 
 class Interface:
     """a Class that managing the displaying of the menus"""
 
-    choose = InputManager("choose", int, int, "Choose Option: ")
+    choose = Input("choose", int, int, "Choose Option: ")
 
     def __init__(self, home_menu: Menu, SessionMaker: Session) -> None:
         self.home_menu = home_menu

@@ -1,87 +1,36 @@
-from utils.option import Option, ShowAllOption
+from utils.option import Option
 from models.employee import Employee
-from sqlalchemy.orm import Query
 from settings import KIND_OPTS
-from utils.input_manager import InputManager
-from utils.signal import Signal
+from views.mixins import (
+    CreateMixin,
+    UpdateMixin,
+    DeleteMixin,
+    ShowAllMixin,
+)
 
 
-class ShowAllEmployeesOpt(ShowAllOption):
+class ShowAllEmployeesOpt(ShowAllMixin, Option):
     name = "Show all"
     info = "Employees List"
-    objects = "employees"
     model = Employee
 
 
-class CreateNewEmployeesOpt(Option):
+class CreateNewEmployeesOpt(CreateMixin, Option):
     name = "Create New"
     info = f"Avaliable Kinds: {KIND_OPTS}"
-    input_list = [
-        InputManager("name", str, str, "Name: "),
-        InputManager("job_title", str, str, "Title: "),
-        InputManager("gender", str, str, "Gender (m , f): "),
-        InputManager("kind", str, str, "Kind: "),
-    ]
-
-    @property
-    def task(self) -> str:
-        return f" Creating {self.data_dict} Employee"
-
-    def excute(self) -> Signal:
-        with self.SessionMaker as session:
-            session.add(Employee(**self.data_dict))
-            session.commit()
+    model = Employee
 
 
-class UpdateEmployeesOpt(Option):
+class UpdateEmployeesOpt(UpdateMixin, Option):
     name = "Update"
     info = f"Avaliable Kinds: {KIND_OPTS}"
-    input_list = [
-        InputManager("em_id", int, int, "Employee Id you want to Update: "),
-        InputManager("name", str, str, "Name: "),
-        InputManager("job_title", str, str, "Title: "),
-        InputManager("gender", str, str, "Gender (m , f): "),
-        InputManager("kind", str, str, "Kind: "),
-    ]
-
-    @property
-    def task(self) -> str:
-        return f" Updating ({self.get_query().first()}) -> {self.data_dict} Employee"
-
-    def get_query(self) -> Query:
-        with self.SessionMaker as session:
-            em_id = self.data_dict.pop("em_id")
-            q = session.query(Employee).filter(Employee.id == em_id)
-            self.q = q
-            return q
-
-    def excute(self) -> Signal:
-        with self.SessionMaker as session:
-            q = self.get_query()
-            q.update(self.data_dict)
-            session.commit()
+    model = Employee
+    search_key = "id"
+    searched_model = Employee
 
 
-class DeleteEmployeesOpt(Option):
+class DeleteEmployeesOpt(DeleteMixin, Option):
     name = "Delete"
-
-    input_list = [
-        InputManager("em_id", int, int, "Employee Id you want to Delete: "),
-    ]
-
-    @property
-    def task(self) -> str:
-        return f"Deleting: {self.get_query().first()}"
-
-    def get_query(self) -> Query:
-        with self.SessionMaker as session:
-            em_id = self.data_dict.get("em_id")
-            q = session.query(Employee).filter(Employee.id == em_id)
-            self.q = q
-            return q
-
-    def excute(self) -> Signal:
-        with self.SessionMaker as session:
-            q = self.get_query()
-            session.delete(q.first())
-            session.commit()
+    model = Employee
+    search_key = "id"
+    searched_model = Employee

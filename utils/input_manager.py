@@ -1,7 +1,7 @@
 from typing import Callable, Any
 
 
-class InputManager:
+class Input:
     def __init__(
         self,
         key: str,
@@ -10,13 +10,15 @@ class InputManager:
         promt_msg: str,
         cast_func_args: tuple = (),
         cast_func_kwargs: dict = {},
+        call_back_funcs=[],
     ) -> None:
         self.t = t
         self.cast_func: Callable = cast_func
         self.promt_msg: str = promt_msg
         self.key = key
-        self.cast_func_args = cast_func_args
-        self.cast_func_kwargs = cast_func_kwargs
+        self.cast_func_args: tuple = cast_func_args
+        self.cast_func_kwargs: dict = cast_func_kwargs
+        self.call_back_funcs: Callable = call_back_funcs
 
     def try_till_get(self, exit_opt=False) -> dict:
         """start a while loop until getting the data , returns a dict with the key and gotten data"""
@@ -34,4 +36,7 @@ class InputManager:
                 print(e)
 
     def _cast(self, value) -> Any:
-        return self.cast_func(value, *self.cast_func_args, **self.cast_func_kwargs)
+        value = self.cast_func(value, *self.cast_func_args, **self.cast_func_kwargs)
+        for func in self.call_back_funcs:
+            value = func(value)
+        return value
