@@ -1,18 +1,18 @@
 from typing import Any
-from datetime import date
 
 
-def validate_float(value: Any) -> float:
+def validate_type(value: Any, t) -> Any:
+    if isinstance(value, t):
+        return value
+    # Try cast
     try:
-        return float(value)
+        return t(value)
     except:
-        raise TypeError("the Type of data should be Float")
+        raise TypeError(f"Worked Date should be a {t}")
 
 
-def validate_date(value: Any) -> date:
-    if isinstance(value, date):
+def validate_in_list(value: Any, l: list) -> Any:
+    if value in l:
         return value
     else:
-        raise TypeError("Worked Date should be a date")
-
-# validate_in_list 
+        raise ValueError(f"the Gender Should be in {l}")

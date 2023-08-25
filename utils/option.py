@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod, abstractproperty
-from utils.input_manager import InputManager
+from utils.input_manager import Input
 from utils.signal import *
 from utils.funcs import combine_dicts
-from sqlalchemy.orm import DeclarativeBase, Query, Session
+from sqlalchemy.orm import Query, Session
+from models.employee import Base
 import traceback
 
 
@@ -11,12 +12,16 @@ class Option(ABC):
 
     name: str = None
     info: str = None
-    input_list: list[InputManager] = []
+    model: Base = None
+    input_list: list[Input] = []
 
     def __init__(self, SessionMaker: Session, exit_opt: bool = False) -> None:
         self.exit_opt = exit_opt
         self.SessionMaker = SessionMaker
         self.data_dict = {}
+
+    def get_input_list(self) -> list[Input]:
+        return self.input_list
 
     @abstractproperty
     def task(self) -> str:
@@ -32,12 +37,12 @@ class Option(ABC):
     def get_data(self) -> None:
         """Take the data from the Input Manager and set it in the Option Instance"""
         data = []
-        for item in self.input_list:
+        for item in self.get_input_list():
             data.append(item.try_till_get(self.exit_opt))
         self.data_dict = combine_dicts(*data)
 
     @abstractmethod
-    def excute(self) -> Signal:
+    def excute(self) -> None:
         """a function excutes when the user choose the option and return a Signal"""
 
     def add_signal(self, signal: Signal) -> None:
@@ -46,7 +51,7 @@ class Option(ABC):
     def start(self) -> None:
         self.show_info()
         # to ensure that the opt needs data
-        if len(self.input_list) >= 1:
+        if len(self.get_input_list()) >= 1:
             self.get_data()
         try:
             self.excute()
@@ -57,29 +62,3 @@ class Option(ABC):
             print(traceback.format_exc())
 
         self.signal.print()
-
-
-class ShowAllOption(Option):
-    name = "Show All"
-    objects: str = None
-    model: DeclarativeBase = None
-
-    @property
-    def task(self) -> str:
-        return f" Showing all {self.get_objects_name()}"
-
-    def get_objects_name(self) -> str:
-        if self.objects:
-            return self.objects
-        else:
-            raise ValueError("You need to add objects attr to your class Option")
-
-    def excute(self) -> Signal:
-        with self.SessionMaker as session:
-            q: Query = session.query(self.model).all()
-            if len(q) == 0:
-                print("Empty!")
-            else:
-                for x in q:
-                    x.session = self.SessionMaker
-                    print(x)

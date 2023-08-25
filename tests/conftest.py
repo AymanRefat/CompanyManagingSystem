@@ -5,11 +5,11 @@ from datetime import date
 import random as rd
 
 from settings import PATH, TEST_DB_NAME
-from models.funcs import create_tabels
-from models.employee import Employee, WorkedHours, Base
+from models.employee import Employee, WorkedHours
 from utils.option import Option
 from utils.signal import Signal
 from utils.funcs import get_test_session_maker, get_test_sqlite_engine
+from models.base import Base
 
 
 def create_employee(SessionMaker: Session, d: dict) -> Employee:
@@ -109,7 +109,8 @@ def SessionMaker(employee_dict2, employee_dict1):
     # Creating the Database and tables
     engine = get_test_sqlite_engine(False, TEST_DB_NAME)
     SessionMaker = get_test_session_maker(engine)
-    create_tabels(engine)
+    Base._set_sessionmaker(SessionMaker)
+    Base.create_tabels(engine)
 
     #  Create 2 Employees and 2 Worked Hours
     em1 = create_employee(SessionMaker, employee_dict1)

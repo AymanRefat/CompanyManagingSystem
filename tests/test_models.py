@@ -93,5 +93,7 @@ def test_total_hours(
         q = session.query(WorkedHours).filter(WorkedHours.employee_id == employee.id)
         for x in q:
             total += x.hours
-        employee.session = SessionMaker
-    assert employee.get_total_hours() == total
+
+    with SessionMaker as session:
+        obj = session.query(Employee).filter(Employee.id == employee.id).first()
+        assert obj.get_total_hours() == total

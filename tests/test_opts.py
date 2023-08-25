@@ -10,7 +10,7 @@ from views.worked_hours import (
     addWorkedHoursForAll,
     addWorkedHoursForEmployee,
 )
-from views.rewards import ShowAllOption, CreateReward, DeleteReward
+from views.rewards import CreateReward, DeleteReward
 from sqlalchemy.orm import Session
 from tests.conftest import create_employee
 
@@ -36,22 +36,22 @@ class TestEmployeeOptions:
             #  Getting id from the created employee
             obj = create_employee(SessionMaker, employee_dict1)
             opt = UpdateEmployeesOpt(SessionMaker)
+
             opt.data_dict = {**employee_dict2}
             #  add the new data and the id
-            opt.data_dict["em_id"] = obj.id
+            opt.data_dict["id"] = obj.id
             opt.excute()
             # assert that the name in the db is the new name
-            q2 = s.query(Employee).filter(Employee.id == obj.id)
-            assert q2.first().name == employee_dict2.get("name")
+            assert opt.get_obj().name == employee_dict2.get("name")
 
     def test_delete_opt(self, employee_dict1: dict, SessionMaker: Session):
         opt = DeleteEmployeesOpt(SessionMaker)
         obj = create_employee(SessionMaker, employee_dict1)
         with SessionMaker as s:
-            opt.data_dict["em_id"] = obj.id
+            opt.data_dict["id"] = obj.id
             opt.excute()
 
-            assert s.query(Employee).get({"id" == obj.id}) == None
+            assert s.query(Employee).filter(Employee.id == obj.id).count() == 0
 
 
 class TestWorkedHoursOptions:
