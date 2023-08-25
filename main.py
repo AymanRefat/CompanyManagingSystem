@@ -8,5 +8,5 @@ if __name__ == "__main__":
     load_dotenv()
     Base.create_tabels(DB_ENGINE)
     Base._set_sessionmaker(SESSION_MAKER)
-    inter = Interface(menus.home_menu, SESSION_MAKER)
+    inter = Interface(menus.home_menu)
     inter.start()

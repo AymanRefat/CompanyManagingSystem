@@ -19,7 +19,7 @@ class ShowAllMixin(BaseMixin):
         return f" Showing all {self.get_model().__name__}"
 
     def excute(self) -> None:
-        with self.SessionMaker as session:
+        with self.get_model().session as session:
             q = session.query(self.get_model()).all()
             if len(q) == 0:
                 print("Empty!")
