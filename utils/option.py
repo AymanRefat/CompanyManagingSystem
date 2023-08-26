@@ -56,7 +56,9 @@ class Option(ABC):
             self.add_signal(Succeeded)
         except Exception as e:
             self.add_signal(Failed)
-            print(e)
-            print(traceback.format_exc())
+            with open("error.log", "w") as file:
+                print(e)
+                file.write(f"{e.__class__}: {e}")
+                file.write(traceback.format_exc())
 
         self.signal.print()
