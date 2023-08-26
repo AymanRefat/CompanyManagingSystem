@@ -62,7 +62,9 @@ class WorkedHours(Base):
     employee_id: Mapped[int] = mapped_column(
         "employee_id", ForeignKey("employees.id"), nullable=False
     )
-    employee: Mapped["Employee"] = relationship(back_populates="worked_hours")
+    employee: Mapped["Employee"] = relationship(
+        back_populates="worked_hours", lazy="subquery"
+    )
     hours: Mapped[float] = mapped_column("hours", nullable=False)
     hour_rate: Mapped[float] = mapped_column("current_hour_rate", nullable=False)
     worked_date: Mapped[date] = mapped_column("worked_time", nullable=False)
@@ -105,7 +107,7 @@ class Reward(Base):
     employee_id: Mapped[int] = mapped_column(
         "employee_id", ForeignKey("employees.id"), nullable=False
     )
-    employee: Mapped[Employee] = relationship(back_populates="rewards")
+    employee: Mapped[Employee] = relationship(back_populates="rewards", lazy="subquery")
 
     value: Mapped[float] = mapped_column("value")
     reward_date: Mapped[date] = mapped_column("date")

@@ -45,7 +45,7 @@ class TestEmployeeOptions:
             assert opt.get_obj().name == employee_dict2.get("name")
 
     def test_delete_opt(self, employee_dict1: dict, SessionMaker: Session):
-        opt = DeleteEmployeesOpt(SessionMaker)
+        opt = DeleteEmployeesOpt()
         obj = create_employee(SessionMaker, employee_dict1)
         with SessionMaker as s:
             opt.data_dict["id"] = obj.id
@@ -55,9 +55,11 @@ class TestEmployeeOptions:
 
 
 class TestWorkedHoursOptions:
-    def test_show_all(self, SessionMaker: Session):
+    def test_show_all(
+        self,
+    ):
         # Create before show
-        opt = ShowWorkedHours(SessionMaker)
+        opt = ShowWorkedHours()
         opt.excute()
 
 
