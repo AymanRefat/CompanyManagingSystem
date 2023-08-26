@@ -2,7 +2,7 @@ from views.employee import *
 from views.worked_hours import *
 from utils.menu import Menu
 from views.rewards import *
-
+from views.report import *
 
 hours_menu = Menu(
     "Hours",
@@ -19,7 +19,9 @@ employees_menu = Menu(
     CreateNewEmployeesOpt,
     DeleteEmployeesOpt,
     UpdateEmployeesOpt,
+    ShowFullReportforAll,
 )
+
 
 rewards_menu = Menu("Rewards", ShowAllRewards, CreateReward, DeleteReward)
 

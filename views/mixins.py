@@ -18,14 +18,17 @@ class ShowAllMixin(BaseMixin):
     def task(self) -> str:
         return f" Showing all {self.get_model().__name__}"
 
-    def excute(self) -> None:
+    def get_objects(self) -> list[object]:
         with self.get_model().session as session:
-            q = session.query(self.get_model()).all()
-            if len(q) == 0:
-                print("Empty!")
-            else:
-                for x in q:
-                    self.show(x)
+            return session.query(self.get_model()).all()
+
+    def excute(self) -> None:
+        q = self.get_objects()
+        if len(q) == 0:
+            print("Empty!")
+        else:
+            for x in q:
+                self.show(x)
 
     def show(self, obj) -> None:
         print(obj)

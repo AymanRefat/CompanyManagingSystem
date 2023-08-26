@@ -23,12 +23,10 @@ class Employee(Base):
         "kind", String(20), nullable=False
     )  # full , part , free
     worked_hours: Mapped[List[WorkedHours]] = relationship(
-        back_populates="employee",
-        cascade="all, delete",
+        back_populates="employee", cascade="all, delete", lazy="subquery"
     )
     rewards: Mapped[List[Reward]] = relationship(
-        back_populates="employee",
-        cascade="all, delete",
+        back_populates="employee", cascade="all, delete", lazy="subquery"
     )
 
     @classmethod
@@ -86,6 +84,9 @@ class WorkedHours(Base):
             Input("hour_rate", float, float, "Enter Hour Rate Price: "),
             Input("hours", float, float, "Enter Hours Worked: "),
         ]
+
+    def bill(self) -> float:
+        return self.hours * self.hour_rate
 
     @validates("worked_date")
     def validate_worked_date(self, key, value) -> date:
