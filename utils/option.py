@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod, abstractproperty
 from utils.input_manager import Input
 from utils.signal import *
 from utils.funcs import combine_dicts
-from sqlalchemy.orm import Query, Session
 from models.employee import Base
 import traceback
 
@@ -15,9 +14,8 @@ class Option(ABC):
     model: Base = None
     input_list: list[Input] = []
 
-    def __init__(self, SessionMaker: Session, exit_opt: bool = False) -> None:
+    def __init__(self, exit_opt: bool = False) -> None:
         self.exit_opt = exit_opt
-        self.SessionMaker = SessionMaker
         self.data_dict = {}
 
     def get_input_list(self) -> list[Input]:
@@ -58,7 +56,9 @@ class Option(ABC):
             self.add_signal(Succeeded)
         except Exception as e:
             self.add_signal(Failed)
-            print(e)
-            print(traceback.format_exc())
+            with open("error.log", "w") as file:
+                print(e)
+                file.write(f"{e.__class__}: {e}")
+                file.write(traceback.format_exc())
 
         self.signal.print()

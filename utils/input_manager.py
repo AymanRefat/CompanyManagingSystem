@@ -32,7 +32,6 @@ class Input:
             try:
                 return {self.key: self._cast(data)}
             except Exception as e:
-                print(e.__traceback__.__str__())
                 print(e)
 
     def _cast(self, value) -> Any:

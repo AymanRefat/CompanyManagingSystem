@@ -38,13 +38,13 @@ class OptRaiseErr(Option):
 
 @pytest.fixture(scope="session")
 def opt_excute():
-    opt = OptExcute("", False)
+    opt = OptExcute(False)
     return opt
 
 
 @pytest.fixture(scope="session")
 def opt_raise_err():
-    opt = OptRaiseErr("", False)
+    opt = OptRaiseErr(False)
     return opt
 
 

@@ -18,7 +18,7 @@ class addWorkedHoursForAll(CreateMixin, Option):
         return f"Adding {self.data_dict.get('hours')} with Hour Rate {self.data_dict.get('hour_rate')}$ For All Employees "
 
     def excute(self) -> None:
-        with self.SessionMaker as session:
+        with self.get_model().session as session:
             employees = session.query(Employee).all()
             for em in employees:
                 self.data_dict["employee_id"] = em.id

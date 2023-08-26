@@ -2,7 +2,7 @@ from __future__ import annotations
 from abc import abstractmethod
 from sqlalchemy.orm import DeclarativeBase
 from utils.input_manager import Input
-from sqlalchemy.orm import Query, Session
+from sqlalchemy.orm import Session
 from sqlalchemy import Engine
 
 
